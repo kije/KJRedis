@@ -2,7 +2,7 @@
 
 
 /**
- * Requires installed phpredis!
+ * Requires installed phpredis (phpmodule)! https://github.com/nicolasff/phpredis
  */
 
 class KJException extends Exception {}
