@@ -52,5 +52,14 @@ class KJRedis {
 		}
 	}
 
-	
+	public function get($key) {
+		return $this->redis->get($key);
+	}
+
+	public function set($key, $value) {
+
+		$this->redis->get($key, $value);
+
+		return $this; // to allow following sytax $kjredis->set('text', 1)_>set('status', 'active')->set('test', 'works'); 
+	}
 }
