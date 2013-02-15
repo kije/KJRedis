@@ -39,7 +39,7 @@ class KJRedis {
 					break;
 
 				default:
-					throw new KJException('Wrong number of $arguments: ' . func_num_args() . ' given, max. 3 expected!\n<br />{$e}' );
+					throw new KJException('Wrong number of arguments: ' . func_num_args() . ' given, max. 3 expected!\n<br />{$e}' );
 					break;
 			}
 		} catch (KJException $e) {
@@ -51,4 +51,6 @@ class KJRedis {
 			exit();
 		}
 	}
+
+	
 }
