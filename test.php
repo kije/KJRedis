@@ -36,5 +36,9 @@ var_dump($redis->getAllKeysWithValue());
 // Test 7: generate error
 $redis->set('not', 'a', 'good', 'idea');
 
+// Delete all keys
+
+$redis->flushAll();
+
 ?>
 </pre>
