@@ -39,12 +39,19 @@ class KJRedis {
 				exit();
 			}
 		} catch (KJException $e) {
-			if (ini_get('display_errors')){
-				echo $e->getMessage();
-				exit(); 
-			}
-
+			$this->error($e);
+			exit();
 		} 
+	}
+
+	/**
+	 * Throws an error if the display_errors in the php.ini is set
+	 * @param  Exception $exception the exception
+	 */
+	protected function error($exception) {
+		if (ini_get('display_errors') && strtolower(ini_get('display_errors')) != 'off' ){
+			echo $exception->getMessage() . $exception->getTraceAsString();
+		}
 	}
 
 	public function __call($name, $arguments) {
@@ -72,9 +79,7 @@ class KJRedis {
 				}
 			} 
 		catch (KJException $e) {
-			if (ini_get('display_errors')){
-				echo $e->getMessage() . $e->getTraceAsString();
-			}
+			$this->error($e);
 			return false;
 		}
 
@@ -101,9 +106,7 @@ class KJRedis {
 					throw new KJException('Wrong number of arguments: ' . func_num_args() . ' given, max. 2 expected!<br />' );
 			}
 		} catch (KJException $e) {
-			if (ini_get('display_errors')){
-				echo $e->getMessage() . $e->getTraceAsString();
-			}
+			$this->error($e);
 			return false;
 		}
 
