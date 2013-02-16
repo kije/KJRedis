@@ -113,4 +113,17 @@ class KJRedis {
 
 		return ($ret ? $this : false);
 	}
+	/**
+	 * Get all Keys and value as an array
+	 * @return array 	Associative array with $key => $value
+	 */
+	public function getAllKeysWithValue() {
+		$return_var = array();
+		$keys = $this->redis->keys('*');
+		foreach ($keys as $key ) {
+			$return_var[$key] = $this->redis->get($key);
+		}
+
+		return $return_var;
+	}
 }
