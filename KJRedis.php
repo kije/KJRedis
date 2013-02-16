@@ -1,9 +1,11 @@
 <?php
-
+if (session_status() != PHP_SESSION_ACTIVE) {
+	session_start(); 
+}
 require_once 'CustomException.php';
 
 /**
- * Requires installed phpredis (phpmodule)! https://github.com/nicolasff/phpredis
+ * Requires phpredis installed! https://github.com/nicolasff/phpredis
  */
 
 
@@ -17,7 +19,6 @@ class KJRedis {
 	private $redis;
 
 	/**
-	 * 
 	 * @param String $host 		host or unix soket file to connect to redis
 	 * @param int 	 $port 		port to connect to redis (optional)
 	 * @param double $timeout 	timeout for the connection (optional)
@@ -32,7 +33,7 @@ class KJRedis {
 				if (func_num_args()<=3 && isset($host)) {
 					call_user_func_array(array($this->redis, 'connect'), $args);
 				} else {
-					throw new KJException('Wrong number of arguments: ' . func_num_args() . ' given, max. 3 expected!<br />' );
+					throw new KJException('Wrong number of arguments supplied: ' . func_num_args() . ' given, max. 3 expected!<br />' );
 				}
 			} catch (RedisException $e) {
 				throw $e;
@@ -75,7 +76,7 @@ class KJRedis {
 					$this->redis->set(func_get_arg(0), func_get_arg(1));
 				}
 				else {
-					throw new KJException('Wrong number of arguments: ' . func_num_args() . ' given, max. 2 expected!<br />' );
+					throw new KJException('Wrong number of arguments supplied: ' . func_num_args() . ' given, 1 or 2 expected!<br />' );
 				}
 			} 
 		catch (KJException $e) {
@@ -103,7 +104,7 @@ class KJRedis {
 			} else if (func_num_args() == 2) {
 					$ret = $this->redis->setnx(func_get_arg(0), func_get_arg(1));
 			} else {
-					throw new KJException('Wrong number of arguments: ' . func_num_args() . ' given, max. 2 expected!<br />' );
+					throw new KJException('Wrong number of arguments supplied: ' . func_num_args() . ' given, 1 or 2 expected!<br />' );
 			}
 		} catch (KJException $e) {
 			$this->error($e);
@@ -112,6 +113,7 @@ class KJRedis {
 
 		return ($ret ? $this : false);
 	}
+
 	/**
 	 * Get all Keys and value as an array
 	 * @return array 	Associative array with $key => $value
