@@ -6,6 +6,7 @@ require_once 'CustomException.php';
  * Requires installed phpredis (phpmodule)! https://github.com/nicolasff/phpredis
  */
 
+
 class KJException extends CustomException {}
 
 class KJRedis {
@@ -41,7 +42,7 @@ class KJRedis {
 					break;
 
 				default:
-					throw new KJException('Wrong number of arguments: ' . func_num_args() . ' given, max. 3 expected!\n<br />{$e}' );
+					throw new KJException('Wrong number of arguments: ' . func_num_args() . ' given, max. 3 expected!<br />' );
 					break;
 			}
 		} catch (KJException $e) {
@@ -49,7 +50,7 @@ class KJRedis {
 			exit(); 
 
 		} catch (RedisException $e) {
-			echo 'RedisException caught: ' . $e->getMessage();
+			echo 'RedisException caught: ' . $e->getMessage() . $e->getTraceAsString();
 			exit();
 		}
 	}
@@ -70,15 +71,16 @@ class KJRedis {
 			if (func_num_args() == 1 && is_array(func_get_arg(0))) {
 				foreach (func_get_arg(0) as $key => $value) {
 					$this->redis->set($key, $value);
+				}
 				} else if (func_num_args() == 2) {
 					$this->redis->set(func_get_arg(0), func_get_arg(1));
 				}
 				else {
-					throw new KJException('Wrong number of arguments: ' . func_num_args() . ' given, max. 2 expected!\n<br />{$e}' );
+					throw new KJException('Wrong number of arguments: ' . func_num_args() . ' given, max. 2 expected!<br />' );
 				}
 			} 
 		catch (KJException $e) {
-			echo $e->getMessage();
+			echo $e->getMessage() . $e->getTraceAsString();
 			return false;
 		}
 
@@ -102,10 +104,10 @@ class KJRedis {
 			} else if (func_num_args() == 2) {
 					$ret = $this->redis->setnx(func_get_arg(0), func_get_arg(1));
 			} else {
-					throw new KJException('Wrong number of arguments: ' . func_num_args() . ' given, max. 2 expected!\n<br />{$e}' );
+					throw new KJException('Wrong number of arguments: ' . func_num_args() . ' given, max. 2 expected!<br />' );
 			}
 		} catch (KJException $e) {
-			echo $e->getMessage();
+			echo $e->getMessage() . $e->getTraceAsString();
 			return false;
 		}
 
