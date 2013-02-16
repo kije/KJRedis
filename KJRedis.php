@@ -28,31 +28,21 @@ class KJRedis {
 		$this->redis = new Redis();
 
 		try {
-			switch (func_num_args()) {
-				case 1:
-					$this->redis->connect($args[0]);
-					break;
-
-				case 2:
-					$this->redis->connect($args[0], $args[1]);
-					break;
-
-				case 3: 
-					$this->redis->connect($args[0], $args[1], $args[2]);
-					break;
-
-				default:
+			try{
+				if (func_num_args()<=3 && isset($host)) {
+					call_user_func_array(array($this->redis, 'connect'), $args);
+				} else {
 					throw new KJException('Wrong number of arguments: ' . func_num_args() . ' given, max. 3 expected!<br />' );
-					break;
+				}
+			} catch (RedisException $e) {
+				throw $e;
+				exit();
 			}
 		} catch (KJException $e) {
 			echo $e->getMessage();
 			exit(); 
 
-		} catch (RedisException $e) {
-			echo 'RedisException caught: ' . $e->getMessage() . $e->getTraceAsString();
-			exit();
-		}
+		} 
 	}
 
 	public function __call($name, $arguments) {
