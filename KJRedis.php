@@ -39,8 +39,10 @@ class KJRedis {
 				exit();
 			}
 		} catch (KJException $e) {
-			echo $e->getMessage();
-			exit(); 
+			if (ini_get('display_errors')){
+				echo $e->getMessage();
+				exit(); 
+			}
 
 		} 
 	}
@@ -70,7 +72,9 @@ class KJRedis {
 				}
 			} 
 		catch (KJException $e) {
-			echo $e->getMessage() . $e->getTraceAsString();
+			if (ini_get('display_errors')){
+				echo $e->getMessage() . $e->getTraceAsString();
+			}
 			return false;
 		}
 
@@ -97,7 +101,9 @@ class KJRedis {
 					throw new KJException('Wrong number of arguments: ' . func_num_args() . ' given, max. 2 expected!<br />' );
 			}
 		} catch (KJException $e) {
-			echo $e->getMessage() . $e->getTraceAsString();
+			if (ini_get('display_errors')){
+				echo $e->getMessage() . $e->getTraceAsString();
+			}
 			return false;
 		}
 
