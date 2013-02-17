@@ -45,8 +45,6 @@ class KJRedis {
 			exit();
 		}
 	}
-
-	// TODO __get and __set, as well as __isset and __unset. 
 	
 	public function __sleep() {
 		return array('redis', '$connectionData');
@@ -58,6 +56,28 @@ class KJRedis {
 
 	public function __call($name, $arguments) {
 	 	return call_user_func_array(array($this->redis, $name), $arguments); 
+	}
+
+	public static function __set_state($vals) {
+		$obj = new KJRedis($vals['connectionData'][0], $vals['connectionData'][1], $vals['connectionData'][3]);
+
+		return $obj;
+	}
+
+	public function __set($name, $value) {
+		$this->redis->$name = $value;
+	}
+
+	public function __get($name) {
+		return $this->redis->$name;
+	}
+
+	public function __isset($name) {
+		return isset($this->redis->$name);
+	}
+
+	public function __unset($name) {
+		unset($this->redis->$name);
 	}
 
 	/**
