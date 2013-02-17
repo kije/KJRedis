@@ -26,15 +26,18 @@ class KJRedis {
 	 */
 	public function __construct($host /*, $port, $timeout*/) {
 		$args = func_get_args();
+		$connectionData = array();
 		$this->redis = new Redis();
 
 		try {
 			try{
 				if (func_num_args()<=3 && isset($host)) {
 					call_user_func_array(array($this->redis, 'connect'), $args);
-					$connectionData = $args;
+					if(count($args)>=1)$this->connectionData['host'] = $args[0];
+					if(count($args)>=2)$this->connectionData['port'] = $args[1];
+					if(count($args)==3)$this->connectionData['timeout'] = $args[2];
 				} else {
-					throw new KJException('Wrong number of arguments supplied: ' . func_num_args() . ' given, max. 3 expected!<br />' );
+					throw new KJException('Wrong number of arguments supplied: ' . func_num_args() . ' given, max. 3 expected!' );
 				}
 			} catch (RedisException $e) {
 				throw $e;
@@ -47,7 +50,7 @@ class KJRedis {
 	}
 	
 	public function __sleep() {
-		return array('redis', '$connectionData');
+		return array('redis', 'connectionData');
 	}
 
 	public function __wakeup() {
@@ -109,7 +112,7 @@ class KJRedis {
 					$this->redis->set(func_get_arg(0), func_get_arg(1));
 				}
 				else {
-					throw new KJException('Wrong number of arguments supplied: ' . func_num_args() . ' given, 1 or 2 expected!<br />' );
+					throw new KJException('Wrong number of arguments supplied: ' . func_num_args() . ' given, 1 or 2 expected!' );
 				}
 			} 
 		catch (KJException $e) {
@@ -137,7 +140,7 @@ class KJRedis {
 			} else if (func_num_args() == 2) {
 					$ret = $this->redis->setnx(func_get_arg(0), func_get_arg(1));
 			} else {
-					throw new KJException('Wrong number of arguments supplied: ' . func_num_args() . ' given, 1 or 2 expected!<br />' );
+					throw new KJException('Wrong number of arguments supplied: ' . func_num_args() . ' given, 1 or 2 expected!' );
 			}
 		} catch (KJException $e) {
 			$this->error($e);
