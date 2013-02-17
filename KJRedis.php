@@ -16,7 +16,7 @@ class KJRedis {
 	 * Object-Variable of Redis
 	 * @var Redis
 	 */
-	private $redis;
+	private $redis, $connectionData;
 
 	/**
 	 * @param String $host 		host or unix soket file to connect to redis
@@ -32,6 +32,7 @@ class KJRedis {
 			try{
 				if (func_num_args()<=3 && isset($host)) {
 					call_user_func_array(array($this->redis, 'connect'), $args);
+					$connectionData = $args;
 				} else {
 					throw new KJException('Wrong number of arguments supplied: ' . func_num_args() . ' given, max. 3 expected!<br />' );
 				}
@@ -42,22 +43,34 @@ class KJRedis {
 		} catch (KJException $e) {
 			$this->error($e);
 			exit();
-		} 
+		}
 	}
 
-	/**
-	 * Throws an error if the display_errors in the php.ini is set
-	 * @param  Exception $exception the exception
-	 */
-	protected function error($exception) {
-		if (ini_get('display_errors') && strtolower(ini_get('display_errors')) != 'off' ){
-			echo $exception->getMessage() . $exception->getTraceAsString();
-		}
+	// TODO __get and __set, as well as __isset and __unset. 
+	
+	public function __sleep() {
+		return array('redis', '$connectionData');
+	}
+
+	public function __wakeup() {
+		call_user_func_array(array($this->redis, 'connect'), $this->connectionData);
 	}
 
 	public function __call($name, $arguments) {
 	 	return call_user_func_array(array($this->redis, $name), $arguments); 
 	}
+
+	/**
+	 * Shows an error if the display_errors in the php.ini is set
+	 * @param  Exception or Subclasses $exception the exception
+	 */
+	protected function error($exception) {
+		if (ini_get('display_errors') && strtolower(ini_get('display_errors')) != 'off' ){
+			echo $exception->getMessage() .PHP_EOL. $exception->getTraceAsString();
+		}
+	}
+
+	
 
 	/**
 	 * Set a value for key. Optional you can provide an *Associative array*, then this methode will set for every key => value pair the corresponding value for the key. On Error, it throws a KJException
@@ -91,7 +104,7 @@ class KJRedis {
 	 * Set a value for key, if it not exists. Optional you can provide an *Associative array*, then this methode will set for every key => value pair the corresponding value for the key. On Error, it throws a KJException
 	 * @param String $key 			the key
 	 * @param String $value 		the value to set
-	 * @return KJRedis || bool 		Returs on succes an KJRedis-Object so you can use following syntax: $kjredis->set('text', 1)->set('status', 'active')->set('test', 'works'); If the $key => $value pair allready exist in Redis, this methode will return false
+	 * @return KJRedis || bool 		Returns on succes an KJRedis-Object so you can use following syntax: $kjredis->set('text', 1)->set('status', 'active')->set('test', 'works'); If the $key => $value pair allready exist in Redis, this methode will return false
 	 * @throws KJException If $args > 2
 	 */
 	public function setnx(/*$key, $value || $asoc_array*/) {
