@@ -7,4 +7,4 @@ To use this wrapper-class, you'll need the php-module [phpredis](https://github.
 
 
 ##Donate
-Bitcoin: 1HegFnKDUQnkjdLZmnkufhxh3kfWQMWBDj
+Bitcoin: 1kijeg6fvMHqtyBEGE6DtjUimrQ8WUXPE
